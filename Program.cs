@@ -14,13 +14,15 @@ namespace Projeto2015
 
 		private static double _frames { get { return 1000D / (_msNextFrame + _msMainLoop); } }
 		private static double _msNextFrame;
-		private static double _msBase { get { return 125; } }
+		private static double _msBase { get { return 16.6; } }
 		private static double _msGameVelocity { get { return 30; } }
 		private static double _msMainLoop = 0;
 
+		private static int _mod = 0;
+
 		private static TimeSpan _timeGameUpdate { get; set; }
 		private static TimeSpan _timeMainLoop { get; set; }
-		private static TimeSpan _timeFrameRate { get; set; }
+		private static TimeSpan _timeFrameRate { get; set; } = DateTime.Now.TimeOfDay;
 
 		//milisegundos => 16.6; frames => 60fps
 		//milisegundos => 33.2; frames => 30fps
@@ -39,7 +41,7 @@ namespace Projeto2015
 
 			while (true)
 			{
-				if (_timeMainLoop < DateTime.Now.TimeOfDay)
+				if (_timeMainLoop <= DateTime.Now.TimeOfDay)
 				{
 					_stWatch.Reset();
 					_stWatch.Start();
@@ -49,7 +51,7 @@ namespace Projeto2015
 					_stWatch.Stop();
 					_msMainLoop = _stWatch.ElapsedMilliseconds;
 
-					_msNextFrame = _msMainLoop - _msBase;
+					_msNextFrame = (_msMainLoop - _msBase) * -1;
 					_timeMainLoop = DateTime.Now.AddMilliseconds(_msNextFrame).TimeOfDay;
 
 					_timesOfMainLoop.Add(_msMainLoop);
@@ -57,23 +59,26 @@ namespace Projeto2015
 
 				}
 
-				if (_timeFrameRate < DateTime.Now.TimeOfDay)
+				if (_timeFrameRate <= DateTime.Now.TimeOfDay)
 				{
+
 					ShowFrameRate(_countFrames, _timesOfMainLoop.Average());
+
 					_timeFrameRate = DateTime.Now.AddSeconds(1).TimeOfDay;
 
 					_countFrames = 0;
 					_timesOfMainLoop.Clear();
 				}
 
+				
+
 			}
 		}
 
 		static void ShowFrameRate(int frames, double msMainLoop)
 		{
-			//Console.ForegroundColor = ConsoleColor.White;
-			//Console.SetCursorPosition(0, 0);
-			Console.Title = $".:: square simulator ::.   {frames.ToString("N0")} fps | elapsed main loop {msMainLoop.ToString("N0")} milliseconds";
+			Console.Title = $@".:: square simulator ::.   {frames.ToString("N0")} fps | 
+							elapsed main loop {msMainLoop.ToString("N0")} milliseconds";
 		}
 
 		static bool Colision(Square square1, Square square2)
@@ -99,16 +104,15 @@ namespace Projeto2015
 
 		static void Run()
 		{
-			//if (mod % 4 == 0)
-			//{
-			//	Console.Clear();
-			//	mod = 0;
-			//}
-
-			//mod++;
-
 			if (_timeGameUpdate < DateTime.Now.TimeOfDay)
 			{
+				//if (_mod % 2 == 0)
+				//{
+				//	Console.Clear();
+				//	_mod = 0;
+				//}
+
+				//_mod++;
 
 				Console.Clear();
 
@@ -140,7 +144,7 @@ namespace Projeto2015
 			square.Cor = ConsoleColor.Gray;
 			_elements.Add(square);
 
-			/*square = new Square();
+			square = new Square();
 			square.X = 50;
 			square.Y = 10;
 			square.Width = 2;
@@ -154,7 +158,7 @@ namespace Projeto2015
 			square.Width = 2;
 			square.Height = 1;
 			square.Cor = ConsoleColor.Cyan;
-			_elements.Add(square);*/
+			_elements.Add(square);
 
 			square = new Square();
 			square.X = 5;

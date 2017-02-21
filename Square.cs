@@ -61,7 +61,7 @@ namespace Projeto2015
 						{
 							Console.SetCursorPosition(x, y);
 							Console.ForegroundColor = Cor;
-							Console.Write(",");
+							Console.Write("0");
 						}
 					}
 				}
